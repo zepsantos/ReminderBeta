@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:key="PreferenceScreen">
+    <EditTextPreference
+        android:key="username"
+        android:summary="Please provide your username"
+        android:title="Your Name"/>
+    <Preference
+        android:key="Disciplinas"
+        android:title="Disciplinas"/>
+
+<com.example.josep.reminderbeta.YesNoPreference
+    android:title="Log Out"
+    android:key="LogOut"
+    android:positiveButtonText="YES"
+    android:negativeButtonText="NO"
+    android:dialogMessage="Are you sure you want to Log Out?"/>
+
+
+</PreferenceScreen>

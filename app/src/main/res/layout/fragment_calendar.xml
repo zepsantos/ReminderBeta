@@ -1,0 +1,31 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".CalendarFragment">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <com.prolificinteractive.materialcalendarview.MaterialCalendarView
+            android:id="@+id/mCalendar"
+            android:layout_width="match_parent"
+            android:layout_height="400sp"
+            app:mcv_selectionColor="@color/selectionColor"
+            app:mcv_tileHeight="50sp"
+            app:mcv_arrowColor="@color/fab"/>
+
+
+        <ListView
+
+            android:id="@+id/eventsList"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/mCalendar" />
+    </RelativeLayout>
+
+
+</FrameLayout>
