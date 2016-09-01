@@ -1,4 +1,4 @@
-package com.example.josep.reminderbeta;
+package com.example.josep.reminderbeta.Settings;
 
 
 import android.os.Bundle;
@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
+import com.example.josep.reminderbeta.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;

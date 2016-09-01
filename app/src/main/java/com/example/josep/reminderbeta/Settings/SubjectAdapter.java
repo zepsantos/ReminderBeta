@@ -1,4 +1,4 @@
-package com.example.josep.reminderbeta;
+package com.example.josep.reminderbeta.Settings;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -7,15 +7,13 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import com.example.josep.reminderbeta.R;
+
 import java.util.ArrayList;
 
 public class SubjectAdapter extends ArrayAdapter<Subject> {
 	public SubjectAdapter(Context context, ArrayList<Subject> subjects) {
 		super(context, 0, subjects);
-	}
-	private static class ViewHolder {
-		TextView subject;
-
 	}
 
 	@Override
@@ -40,5 +38,10 @@ public class SubjectAdapter extends ArrayAdapter<Subject> {
 		viewHolder.subject.setText(subject.Subject);
 		// Return the completed view to render on screen
 		return convertView;
+	}
+
+	private static class ViewHolder {
+		TextView subject;
+
 	}
 }

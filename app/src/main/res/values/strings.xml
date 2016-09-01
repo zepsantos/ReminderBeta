@@ -13,4 +13,5 @@
     <string name="logOut">Log Out</string>
     <string name="LogOutMessage">Are you sure you want to Log Out?</string>
     <string name="changePassword">Change Password</string>
+    <string name="change">Change</string>
 </resources>

@@ -1,4 +1,4 @@
-package com.example.josep.reminderbeta;
+package com.example.josep.reminderbeta.Settings;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -8,9 +8,9 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-/**
- * Created by zepsantos on 30/08/2016.
- */
+import com.example.josep.reminderbeta.R;
+
+
 public class AppSettingsAdapter extends ArrayAdapter<String> {
 	private Context context;
 	private  String[] settings;
@@ -20,12 +20,6 @@ public class AppSettingsAdapter extends ArrayAdapter<String> {
 		this.context = context;
 		this.settings = settings;
 		this.imgid = imgid;
-	}
-	private static class ViewHolder {
-		TextView settings;
-		ImageView imgView;
-		TextView extratxt;
-
 	}
 
 	@Override
@@ -40,7 +34,6 @@ public class AppSettingsAdapter extends ArrayAdapter<String> {
 			LayoutInflater inflater = LayoutInflater.from(getContext());
 			convertView = inflater.inflate(R.layout.appsettingslv, parent, false);
 			viewHolder.settings = (TextView) convertView.findViewById(R.id.item);
-			viewHolder.extratxt = (TextView) convertView.findViewById(R.id.textView1);
 			// Cache the viewHolder object inside the fresh view
 			viewHolder.imgView = (ImageView) convertView.findViewById(R.id.icon);
 			convertView.setTag(viewHolder);
@@ -52,9 +45,16 @@ public class AppSettingsAdapter extends ArrayAdapter<String> {
 		}
 		// Populate the data into the template view using the data object
 		viewHolder.settings.setText(settings[position]);
-		viewHolder.extratxt.setText("Description "+settings[position]);
+
 		viewHolder.imgView.setImageResource(imgid[position]);
 		// Return the completed view to render on screen
 		return convertView;
+	}
+
+	private static class ViewHolder {
+		TextView settings;
+		ImageView imgView;
+		TextView extratxt;
+
 	}
 }

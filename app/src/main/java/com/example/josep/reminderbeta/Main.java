@@ -6,6 +6,10 @@ import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.v7.app.AppCompatActivity;
 
+import com.example.josep.reminderbeta.Calendar.CalendarFragment;
+import com.example.josep.reminderbeta.RecentContent.NewsFragment;
+import com.example.josep.reminderbeta.School.SchoolFragment;
+import com.example.josep.reminderbeta.Settings.AppSettings;
 import com.roughike.bottombar.BottomBar;
 import com.roughike.bottombar.OnMenuTabClickListener;
 

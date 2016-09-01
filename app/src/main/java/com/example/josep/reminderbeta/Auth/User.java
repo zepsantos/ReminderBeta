@@ -1,8 +1,6 @@
-package com.example.josep.reminderbeta;
+package com.example.josep.reminderbeta.Auth;
 
-/**
- * Created by zepsantos on 27/08/2016.
- */
+
 import com.google.firebase.database.IgnoreExtraProperties;
 
 // [START blog_user_class]

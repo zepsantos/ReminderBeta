@@ -1,4 +1,4 @@
-package com.example.josep.reminderbeta;
+package com.example.josep.reminderbeta.Settings;
 
 
 import android.os.Bundle;
@@ -9,6 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+
+import com.example.josep.reminderbeta.R;
 
 
 /**
@@ -31,35 +33,35 @@ public class AppSettings extends Fragment {
 			R.drawable.ic_notifications_black_24dp,
 			R.drawable.ic_share_black_24dp,
 
-	} ;
+	};
 
-	public AppSettings() {
+	public AppSettings () {
 		// Required empty public constructor
 	}
 
 
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-	                         Bundle savedInstanceState) {
+	public View onCreateView (LayoutInflater inflater, ViewGroup container,
+	                          Bundle savedInstanceState) {
 		// Inflate the layout for this fragment
 		return inflater.inflate(R.layout.fragment_app_settings, container, false);
 	}
 
 	@Override
-	public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+	public void onViewCreated (View view, @Nullable Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
-		AppSettingsAdapter adapter=new AppSettingsAdapter(getContext() , settings, imgid);
-		lv =(ListView) view.findViewById(R.id.lvappsettings);
+		AppSettingsAdapter adapter = new AppSettingsAdapter(getContext(), settings, imgid);
+		lv = (ListView) view.findViewById(R.id.lvappsettings);
 		lv.setAdapter(adapter);
 		lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 			@Override
-			public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-				String Slecteditem= settings[i];
+			public void onItemClick (AdapterView<?> adapterView, View view, int i, long l) {
+				String Slecteditem = settings[i];
 				Fragment selectedFragment = null;
 
 				switch (Slecteditem) {
 					case "SUBJECTS":
-								selectedFragment = new SubjectsList();
+						selectedFragment = new SubjectsList();
 
 						break;
 					case "GROUP":
@@ -67,7 +69,7 @@ public class AppSettings extends Fragment {
 
 						break;
 					case "ACCOUNT":
-						selectedFragment  = new AccountManagement();
+						selectedFragment = new AccountManagement();
 
 						break;
 					case "NOTIFICATION":
@@ -80,9 +82,8 @@ public class AppSettings extends Fragment {
 						break;
 
 
-
 				}
-				if(selectedFragment != null) {
+				if (selectedFragment != null) {
 					getFragmentManager()
 							.beginTransaction()
 							.replace(R.id.mainframe, selectedFragment)
@@ -92,8 +93,6 @@ public class AppSettings extends Fragment {
 
 			}
 		});
-
-
 
 
 	}

@@ -1,4 +1,4 @@
-package com.example.josep.reminderbeta;
+package com.example.josep.reminderbeta.School;
 
 
 import android.os.Bundle;
@@ -8,6 +8,8 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.example.josep.reminderbeta.R;
 
 
 /**
