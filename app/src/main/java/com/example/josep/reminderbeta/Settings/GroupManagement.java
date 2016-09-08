@@ -28,4 +28,5 @@ public class GroupManagement extends Fragment {
 		return inflater.inflate(R.layout.fragment_group_management, container, false);
 	}
 
+
 }

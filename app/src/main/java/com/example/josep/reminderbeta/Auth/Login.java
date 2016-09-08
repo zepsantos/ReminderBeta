@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
@@ -19,7 +20,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import com.example.josep.reminderbeta.Main;
 import com.example.josep.reminderbeta.R;
@@ -55,94 +55,7 @@ public class Login extends Fragment {
 		// Required empty public constructor
 	}
 
-	private void signIn (String email, String password) {
-		//    Log.d(TAG, "signIn:" + email);
-		if (!validateForm()) {
-			return;
-		}
 
-
-		// [START sign_in_with_email]
-		mAuth.signInWithEmailAndPassword(email, password)
-				.addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
-					@Override
-					public void onComplete (@NonNull Task<AuthResult> task) {
-						// Log.d(TAG, "signInWithEmail:onComplete:" + task.isSuccessful());
-						if (task.isSuccessful()) {
-							mAuth.addAuthStateListener(mAuthListener);
-							hasName();
-
-						}
-						// If sign in fails, display a message to the user. If sign in succeeds
-						// the auth state listener will be notified and logic to handle the
-						// signed in user can be handled in the listener.
-						if (!task.isSuccessful()) {
-							// Log.w(TAG, "signInWithEmail", task.getException());
-							Toast.makeText(getActivity(), "Authentication failed.",
-									Toast.LENGTH_SHORT).show();
-							progress.setVisibility(View.INVISIBLE);
-							passText.setText("");
-
-
-						}
-
-					}
-				});
-		// [END sign_in_with_email]
-	}
-
-	private void hasName () {
-		mAuth = FirebaseAuth.getInstance();
-		if (mAuth.getCurrentUser() != null) {
-			mDatchild = mDatabase.child("users").child(mAuth.getCurrentUser().getUid()).child("Name");
-			mDatchild.addValueEventListener(new ValueEventListener() {
-				@Override
-				public void onDataChange (DataSnapshot dataSnapshot) {
-					String name = dataSnapshot.getValue(String.class);
-					if (name != null) {
-						Intent i = new Intent(getActivity(), Main.class);
-						startActivity(i);
-						getActivity().finish();
-						progress.setVisibility(View.INVISIBLE);
-					} else {
-						AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-						builder.setTitle("What's your name?");
-
-
-						final EditText input = new EditText(getContext());
-
-						input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
-						builder.setView(input);
-
-						builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-							@Override
-							public void onClick (DialogInterface dialog, int which) {
-								mText = input.getText().toString();
-								mDatchild.setValue(mText);
-							}
-						});
-						builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-							@Override
-							public void onClick (DialogInterface dialog, int which) {
-								dialog.cancel();
-
-							}
-						});
-
-						builder.show();
-
-					}
-
-				}
-
-				@Override
-				public void onCancelled (DatabaseError databaseError) {
-
-				}
-			});
-
-		}
-	}
 
 
 	private boolean validateForm () {
@@ -213,7 +126,7 @@ public class Login extends Fragment {
 			passText = (EditText) view.findViewById(R.id.pass);
 
 			mAuth = FirebaseAuth.getInstance();
-			/*mAuthListener = new FirebaseAuth.AuthStateListener() {
+			mAuthListener = new FirebaseAuth.AuthStateListener() {
 				@Override
 				public void onAuthStateChanged (@NonNull FirebaseAuth firebaseAuth) {
 					FirebaseUser user = firebaseAuth.getCurrentUser();
@@ -227,7 +140,100 @@ public class Login extends Fragment {
 					}
 
 				}
-			}; */
+			};
+		}
+	}
+
+	private void signIn (String email, String password) {
+		//    Log.d(TAG, "signIn:" + email);
+		if (!validateForm()) {
+			return;
+		}
+
+
+		// [START sign_in_with_email]
+		mAuth.signInWithEmailAndPassword(email, password)
+				.addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
+					@Override
+					public void onComplete (@NonNull Task<AuthResult> task) {
+						// Log.d(TAG, "signInWithEmail:onComplete:" + task.isSuccessful());
+						if (task.isSuccessful()) {
+							mAuth.addAuthStateListener(mAuthListener);
+							hasName();
+
+						}
+						// If sign in fails, display a message to the user. If sign in succeeds
+						// the auth state listener will be notified and logic to handle the
+						// signed in user can be handled in the listener.
+						if (!task.isSuccessful()) {
+							// Log.w(TAG, "signInWithEmail", task.getException());
+							if (getView() != null) {
+								Snackbar snackbar = Snackbar
+										.make(getView(), "Authentication Failed", Snackbar.LENGTH_LONG);
+
+								snackbar.show();
+								progress.setVisibility(View.INVISIBLE);
+								passText.setText("");
+							}
+
+
+						}
+
+					}
+				});
+		// [END sign_in_with_email]
+	}
+
+	private void hasName () {
+		mAuth = FirebaseAuth.getInstance();
+		if (mAuth.getCurrentUser() != null) {
+			mDatchild = mDatabase.child("users").child(mAuth.getCurrentUser().getUid()).child("Name");
+			mDatchild.addValueEventListener(new ValueEventListener() {
+				@Override
+				public void onDataChange (DataSnapshot dataSnapshot) {
+					String name = dataSnapshot.getValue(String.class);
+					if (name != null) {
+						Intent i = new Intent(getActivity(), Main.class);
+						startActivity(i);
+						getActivity().finish();
+						progress.setVisibility(View.INVISIBLE);
+					} else {
+						AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+						builder.setTitle("What's your name?");
+
+
+						final EditText input = new EditText(getContext());
+
+						input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
+						builder.setView(input);
+
+						builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick (DialogInterface dialog, int which) {
+								mText = input.getText().toString();
+								mDatchild.setValue(mText);
+							}
+						});
+						builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick (DialogInterface dialog, int which) {
+								dialog.cancel();
+
+							}
+						});
+
+						builder.show();
+
+					}
+
+				}
+
+				@Override
+				public void onCancelled (DatabaseError databaseError) {
+
+				}
+			});
+
 		}
 	}
 

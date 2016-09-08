@@ -19,7 +19,7 @@ import com.example.josep.reminderbeta.R;
 public class AppSettings extends Fragment {
 	ListView lv;
 	String[] settings = {
-			"SUBJECTS",
+			"SCHOOL SETTINGS",
 			"GROUP",
 			"ACCOUNT",
 			"NOTIFICATION",
@@ -60,8 +60,8 @@ public class AppSettings extends Fragment {
 				Fragment selectedFragment = null;
 
 				switch (Slecteditem) {
-					case "SUBJECTS":
-						selectedFragment = new SubjectsList();
+					case "SCHOOL SETTINGS":
+						selectedFragment = new SchoolSettings();
 
 						break;
 					case "GROUP":

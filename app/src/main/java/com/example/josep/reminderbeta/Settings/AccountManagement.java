@@ -2,23 +2,31 @@ package com.example.josep.reminderbeta.Settings;
 
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import com.example.josep.reminderbeta.InitApp;
 import com.example.josep.reminderbeta.R;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -74,6 +82,11 @@ public class AccountManagement extends Fragment {
 		changePassbtn.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick (View v) {
+				View view = getActivity().getCurrentFocus();
+				if (view != null) {
+					InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+					imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+				}
 				AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
 				builder.setTitle("Are you sure you want to change the password?");
 
@@ -84,11 +97,26 @@ public class AccountManagement extends Fragment {
 						if (!validateForm()) {
 							return;
 						} else {
-							String password = passText.getText().toString();
 							mAuth = FirebaseAuth.getInstance();
-							if (mAuth.getCurrentUser() != null) {
-								mAuth.getCurrentUser().updatePassword(password); //NOT WORKING
-								signout();
+							if (mAuth != null) {
+								FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+								Log.d("USERLOGGEDIN", user.getEmail().toString());
+								user.updatePassword(passText.getText().toString().trim())
+										.addOnCompleteListener(new OnCompleteListener<Void>() {
+											@Override
+											public void onComplete (@NonNull Task<Void> task) {
+												if (task.isSuccessful()) {
+													signout();
+												} else {
+													if (getView() != null) {
+														Snackbar snackbar = Snackbar.make(getView(), "Password Unsucessufuly changed", Snackbar.LENGTH_LONG);
+														snackbar.show();
+													}
+
+												}
+											}
+										});
+
 							}
 						}
 					}
@@ -160,13 +188,6 @@ public class AccountManagement extends Fragment {
 		});
 	}
 
-	private void changePassword (String password) {
-
-	/*	progress = ProgressDialog.show(getActivity(), "",
-				"Changing Password", true); */
-
-
-	}
 
 	private boolean validateForm () {
 		boolean valid = true;
@@ -188,5 +209,18 @@ public class AccountManagement extends Fragment {
 		Intent i = new Intent(getActivity(), InitApp.class);
 		startActivity(i);
 		getActivity().finish();
+		/* FirebaseAuth.AuthStateListener authListener = new FirebaseAuth.AuthStateListener() {
+			@Override
+			public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+				FirebaseUser user = firebaseAuth.getCurrentUser();
+				if (user == null) {
+					Log.d("ACCOUNTMANAGEMENT","USER LOGGEDOUT");
+					// user auth state is changed - user is null
+					// launch login activity
+
+				}
+			}
+		}; */
+
 	}
 }
