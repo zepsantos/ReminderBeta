@@ -12,6 +12,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.text.InputType;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -40,6 +41,7 @@ import com.google.firebase.database.ValueEventListener;
  */
 public class Login extends Fragment {
 	private static final String TAG = "MainActivity";
+	public static String Group;
 	ProgressBar progress;
 	private FirebaseAuth mAuth;
 	private FirebaseAuth.AuthStateListener mAuthListener;
@@ -50,7 +52,6 @@ public class Login extends Fragment {
 	private Button signbtn;
 	private DatabaseReference mDatchild;
 	private DatabaseReference mDatabase;
-
 	public Login () {
 		// Required empty public constructor
 	}
@@ -83,6 +84,8 @@ public class Login extends Fragment {
 	@Override
 	public View onCreateView (LayoutInflater inflater, ViewGroup container,
 	                          Bundle savedInstanceState) {
+
+
 		// Inflate the layout for this fragment
 		return inflater.inflate(R.layout.fragment_login, container, false);
 	}
@@ -160,7 +163,7 @@ public class Login extends Fragment {
 						if (task.isSuccessful()) {
 							mAuth.addAuthStateListener(mAuthListener);
 							hasName();
-
+							hasGroup();
 						}
 						// If sign in fails, display a message to the user. If sign in succeeds
 						// the auth state listener will be notified and logic to handle the
@@ -184,6 +187,38 @@ public class Login extends Fragment {
 		// [END sign_in_with_email]
 	}
 
+	private void hasGroup() {
+		mAuth = FirebaseAuth.getInstance();
+		if (mAuth.getCurrentUser() != null) {
+			mDatchild = mDatabase.child("users").child(mAuth.getCurrentUser().getUid()).child("group");
+			mDatchild.addValueEventListener(new ValueEventListener() {
+				@Override
+				public void onDataChange(DataSnapshot dataSnapshot) {
+					Group = dataSnapshot.getValue(String.class);
+					Log.d("GROUP", Group);
+					nextActivity();
+
+
+				}
+
+				@Override
+				public void onCancelled(DatabaseError databaseError) {
+
+				}
+			});
+		}
+	}
+
+
+	public String getGroup() {
+		if (Group != null) {
+			return Group;
+		}
+
+		return null;
+	}
+
+
 	private void hasName () {
 		mAuth = FirebaseAuth.getInstance();
 		if (mAuth.getCurrentUser() != null) {
@@ -193,10 +228,8 @@ public class Login extends Fragment {
 				public void onDataChange (DataSnapshot dataSnapshot) {
 					String name = dataSnapshot.getValue(String.class);
 					if (name != null) {
-						Intent i = new Intent(getActivity(), Main.class);
-						startActivity(i);
-						getActivity().finish();
-						progress.setVisibility(View.INVISIBLE);
+
+						hasGroup();
 					} else {
 						AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
 						builder.setTitle("What's your name?");
@@ -235,6 +268,13 @@ public class Login extends Fragment {
 			});
 
 		}
+	}
+
+	private void nextActivity() {
+		Intent i = new Intent(getActivity(), Main.class);
+		startActivity(i);
+		getActivity().finish();
+		progress.setVisibility(View.INVISIBLE);
 	}
 
 }

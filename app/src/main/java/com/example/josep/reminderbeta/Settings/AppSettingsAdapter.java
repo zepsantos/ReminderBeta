@@ -36,6 +36,8 @@ public class AppSettingsAdapter extends ArrayAdapter<String> {
 			viewHolder.settings = (TextView) convertView.findViewById(R.id.item);
 			// Cache the viewHolder object inside the fresh view
 			viewHolder.imgView = (ImageView) convertView.findViewById(R.id.icon);
+
+
 			convertView.setTag(viewHolder);
 
 
@@ -45,8 +47,8 @@ public class AppSettingsAdapter extends ArrayAdapter<String> {
 		}
 		// Populate the data into the template view using the data object
 		viewHolder.settings.setText(settings[position]);
-
 		viewHolder.imgView.setImageResource(imgid[position]);
+
 		// Return the completed view to render on screen
 		return convertView;
 	}
