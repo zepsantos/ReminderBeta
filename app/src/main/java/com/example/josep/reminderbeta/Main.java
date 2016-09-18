@@ -10,18 +10,40 @@ import com.example.josep.reminderbeta.Calendar.CalendarFragment;
 import com.example.josep.reminderbeta.RecentContent.NewsFragment;
 import com.example.josep.reminderbeta.School.SchoolFragment;
 import com.example.josep.reminderbeta.Settings.AppSettings;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.roughike.bottombar.BottomBar;
 import com.roughike.bottombar.OnMenuTabClickListener;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class Main extends AppCompatActivity {
+	public static List<String> Group;
 	private BottomBar mBottomBar;
+	private DatabaseReference mDatchild;
+	private DatabaseReference mDatabase;
+	private FirebaseAuth mAuth;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
 
+		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+
+		mDatabase = FirebaseDatabase.getInstance().getReference();
+		mAuth = FirebaseAuth.getInstance();
+		hasGroup();
+		showBottomBar(savedInstanceState);
+
+	}
+
+	private void showBottomBar(Bundle savedInstanceState) {
 		mBottomBar = BottomBar.attach(this,
 				savedInstanceState);
 		mBottomBar.setMaxFixedTabs(4);
@@ -50,15 +72,14 @@ public class Main extends AppCompatActivity {
 
 			@Override
 			public void onMenuTabReSelected(@IdRes int menuItemId) {
-			switch (menuItemId) {
-				case R.id.SettingsMenu:
-					Settings();
-					break;
-			}
+				switch (menuItemId) {
+					case R.id.SettingsMenu:
+						Settings();
+						break;
+				}
 
 			}
 		});
-
 	}
 
 	private void Settings() {
@@ -114,6 +135,36 @@ public class Main extends AppCompatActivity {
 			}
 
 		}
+	}
+
+	private void hasGroup() {
+		mAuth = FirebaseAuth.getInstance();
+		if (mAuth.getCurrentUser() != null) {
+			mDatchild = mDatabase.child("users").child(mAuth.getCurrentUser().getUid()).child("group");
+			mDatchild.addValueEventListener(new ValueEventListener() {
+				@Override
+				public void onDataChange(DataSnapshot dataSnapshot) {
+					List<String> lst = new ArrayList<>(); // Result will be holded Here
+
+					for (DataSnapshot dsp : dataSnapshot.getChildren()) {
+						lst.add(String.valueOf(dsp.getKey())); //add result into array list
+
+					}
+					for (String data : lst) {
+						Group = lst;
+
+					}
+
+
+				}
+
+				@Override
+				public void onCancelled(DatabaseError databaseError) {
+
+				}
+			});
+		}
+
 	}
 }
 

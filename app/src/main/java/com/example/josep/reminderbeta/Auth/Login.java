@@ -12,7 +12,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.text.InputType;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -41,15 +40,15 @@ import com.google.firebase.database.ValueEventListener;
  */
 public class Login extends Fragment {
 	private static final String TAG = "MainActivity";
-	public static String Group;
 	ProgressBar progress;
 	private FirebaseAuth mAuth;
 	private FirebaseAuth.AuthStateListener mAuthListener;
 	private EditText emailText;
 	private EditText passText;
-	private String mText;
+
 	private Button loginbtn;
 	private Button signbtn;
+	private String mText;
 	private DatabaseReference mDatchild;
 	private DatabaseReference mDatabase;
 	public Login () {
@@ -163,7 +162,6 @@ public class Login extends Fragment {
 						if (task.isSuccessful()) {
 							mAuth.addAuthStateListener(mAuthListener);
 							hasName();
-							hasGroup();
 						}
 						// If sign in fails, display a message to the user. If sign in succeeds
 						// the auth state listener will be notified and logic to handle the
@@ -187,36 +185,10 @@ public class Login extends Fragment {
 		// [END sign_in_with_email]
 	}
 
-	private void hasGroup() {
-		mAuth = FirebaseAuth.getInstance();
-		if (mAuth.getCurrentUser() != null) {
-			mDatchild = mDatabase.child("users").child(mAuth.getCurrentUser().getUid()).child("group");
-			mDatchild.addValueEventListener(new ValueEventListener() {
-				@Override
-				public void onDataChange(DataSnapshot dataSnapshot) {
-					Group = dataSnapshot.getValue(String.class);
-					Log.d("GROUP", Group);
-					nextActivity();
 
 
-				}
-
-				@Override
-				public void onCancelled(DatabaseError databaseError) {
-
-				}
-			});
-		}
-	}
 
 
-	public String getGroup() {
-		if (Group != null) {
-			return Group;
-		}
-
-		return null;
-	}
 
 
 	private void hasName () {
@@ -228,8 +200,7 @@ public class Login extends Fragment {
 				public void onDataChange (DataSnapshot dataSnapshot) {
 					String name = dataSnapshot.getValue(String.class);
 					if (name != null) {
-
-						hasGroup();
+						nextActivity();
 					} else {
 						AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
 						builder.setTitle("What's your name?");

@@ -1,14 +1,19 @@
 package com.example.josep.reminderbeta.Settings;
 
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
+import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.example.josep.reminderbeta.R;
 import com.google.firebase.auth.FirebaseAuth;
@@ -19,7 +24,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -32,6 +39,8 @@ public class SubjectsList extends Fragment {
 	private ListView lv;
 	private ArrayList<Subject> arrayOfSubjects;
 	private SubjectAdapter adapter;
+	private String mText;
+	private DatabaseReference mDatchild;
 	public SubjectsList() {
 		// Required empty public constructor
 	}
@@ -49,11 +58,13 @@ public class SubjectsList extends Fragment {
 	public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
 		mDatabase = FirebaseDatabase.getInstance().getReference();
+		mAuth = FirebaseAuth.getInstance();
 		FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.fab);
 		assert fab != null;
 		fab.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
+				addSubject();
 
 			}
 		});
@@ -66,8 +77,7 @@ public class SubjectsList extends Fragment {
 		DatabaseRetrieve();
 	}
 	private void DatabaseRetrieve(){
-		mAuth = FirebaseAuth.getInstance();
-		if(mAuth.getCurrentUser().getUid() != null) {
+		if (mAuth.getCurrentUser() != null) {
 		mDatChild = mDatabase.child("users").child(mAuth.getCurrentUser().getUid()).child("Subjects");
 			if(adapter.getCount() == 0 ) {
 				Subject loading = new Subject("Loading Subjects");
@@ -104,5 +114,46 @@ public class SubjectsList extends Fragment {
 			}
 		});
 	}
+	}
+
+	private void addSubject() {
+
+		if (mAuth.getCurrentUser() != null) {
+			mDatChild = mDatabase.child("users").child(mAuth.getCurrentUser().getUid()).child("Subjects");
+
+			AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+			builder.setTitle("What's the name of the Subject?");
+
+
+			final EditText input = new EditText(getContext());
+
+			input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
+			builder.setView(input);
+
+			builder.setPositiveButton("Create", new DialogInterface.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					mText = input.getText().toString();
+					if (mText.length() != 0) {
+						Map<String, Object> childUpdates = new HashMap<>();
+						childUpdates.put("/users/" + mAuth.getCurrentUser().getUid() + "/Subjects/" + mText + "/name", mText);
+						mDatabase.updateChildren(childUpdates);
+					} else {
+						dialog.dismiss();
+						Toast toast = Toast.makeText(getContext(), "Name can't be blank", Toast.LENGTH_LONG);
+						toast.show();
+					}
+				}
+			});
+			builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					dialog.cancel();
+
+				}
+			});
+
+			builder.show();
+		}
 	}
 }

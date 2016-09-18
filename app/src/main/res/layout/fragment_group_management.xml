@@ -9,9 +9,16 @@
         android:layout_height="wrap_content">
 
         <TextView
+            android:id="@+id/currentgrouptv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/current_groups"/>
+
+        <ListView
             android:id="@+id/currentgroup"
-        android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/currentgrouptv"/>
     </RelativeLayout>
 
 </FrameLayout>

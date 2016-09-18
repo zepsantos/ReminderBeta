@@ -13,5 +13,6 @@ public class OfflineCapabilities extends Application {
 		super.onCreate();
 	/* Enable disk persistence  */
 		FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+
 	}
 }
