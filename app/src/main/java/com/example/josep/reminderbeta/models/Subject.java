@@ -1,0 +1,1 @@
+package com.example.josep.reminderbeta.models;public class Subject {	public String Subject;	public Subject(String Subject){		this.Subject = Subject;	}}

@@ -1,20 +1,1 @@
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item
-        android:id="@+id/NewsMenu"
-        android:icon="@drawable/ic_feedback_black_24dp"
-        android:title="News" />
-    <item
-        android:id="@+id/CalendarMenu"
-        android:icon="@drawable/ic_today_black_24dp"
-        android:title="Calendar" />
-    <item
-        android:id="@+id/SchoolMenu"
-        android:icon="@drawable/ic_school_black_24dp"
-        android:title="School" />
-    <item
-        android:id="@+id/SettingsMenu"
-        android:icon="@drawable/ic_settings_black_24dp"
-        android:title="Settings" />
-
-
-</menu>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">    <item        android:id="@+id/NewsMenu"        android:icon="@drawable/ic_feedback_black_24dp"        android:title="News" />    <item        android:id="@+id/CalendarMenu"        android:icon="@drawable/ic_today_black_24dp"        android:title="Calendar" />    <item        android:id="@+id/SchoolMenu"        android:icon="@drawable/ic_school_black_24dp"        android:title="School" />    <item        android:id="@+id/SettingsMenu"        android:icon="@drawable/ic_settings_black_24dp"        android:title="Settings" /></menu>
