@@ -13,7 +13,7 @@ import android.view.ViewGroup;
 
 import com.example.josep.reminderbeta.Adapters.InvitesAvailableAdapter;
 import com.example.josep.reminderbeta.Decorator.DividerItemDecoration;
-import com.example.josep.reminderbeta.Models.GroupMember;
+import com.example.josep.reminderbeta.Models.Invite;
 import com.example.josep.reminderbeta.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -30,7 +30,7 @@ public class InvitesList extends Fragment {
     private String uid;
     private FirebaseAuth mAuth;
     private DatabaseReference mDatabase;
-    private List<GroupMember> inviteslist = new ArrayList<>();// MEMBERS LIST VOID || LISTA DE MEMBROS
+    private List<Invite> invitesList = new ArrayList<>();// MEMBERS LIST VOID || LISTA DE MEMBROS
     private InvitesAvailableAdapter invitesAdapter;
 
     public InvitesList() {
@@ -50,7 +50,7 @@ public class InvitesList extends Fragment {
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference();
         uid = mAuth.getCurrentUser().getUid();
-        invitesAdapter = new InvitesAvailableAdapter(inviteslist);
+        invitesAdapter = new InvitesAvailableAdapter(invitesList);
         CheckInvitesAvailable();
         InvitesPage();
         super.onViewCreated(view, savedInstanceState);
@@ -65,6 +65,7 @@ public class InvitesList extends Fragment {
 
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(mLayoutManager);
+        recyclerView.setClickable(true);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL));
         recyclerView.setAdapter(invitesAdapter);
@@ -78,15 +79,17 @@ public class InvitesList extends Fragment {
         InvitesAvailable.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                inviteslist.clear();
+                invitesList.clear();
                 List<String> lst = new ArrayList<>();
+                List<String> invitedby = new ArrayList<>();
                 if (dataSnapshot.exists()) {
                     for (DataSnapshot dsp : dataSnapshot.getChildren()) {
                         lst.add(String.valueOf(dsp.getKey()));
+                        invitedby.add(dsp.getValue(String.class));
                     }
                     for (String data : lst) {
-                        GroupMember group = new GroupMember(data);
-                        inviteslist.add(group);
+                        Invite group = new Invite(data);
+                        invitesList.add(group);
                         invitesAdapter.notifyDataSetChanged();
 
                     }
@@ -100,5 +103,14 @@ public class InvitesList extends Fragment {
 
             }
         });
+    }
+
+    public void InviteAccepted() {
+        JoinGroup();
+    }
+
+    private void JoinGroup() {
+
+
     }
 }

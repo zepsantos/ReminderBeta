@@ -77,6 +77,7 @@ public class GroupManagement extends PreferenceFragment {
             LeaveGroupFunction();
             MembersListFragment();
         } else {
+            Members.setTitle(R.string.InviteGroup);
             CreateGroup();// CRIAR GRUPO CASO NAO TENHA
             InvitesFragment();
 
