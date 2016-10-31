@@ -23,7 +23,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 public class InvitesList extends Fragment {
@@ -110,7 +112,10 @@ public class InvitesList extends Fragment {
     }
 
     private void JoinGroup() {
-
+        Map<String, Object> childUpdates = new HashMap<>();
+        childUpdates.put("/groups/" + invitesAdapter.getInviteGroupname() + "/" + "members/" + mAuth.getCurrentUser().getUid(), Settings.mName);
+        childUpdates.put("/users/" + mAuth.getCurrentUser().getUid() + "/group/", invitesAdapter.getInviteGroupname());
+        mDatabase.updateChildren(childUpdates);
 
     }
 }
