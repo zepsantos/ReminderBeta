@@ -90,7 +90,7 @@ public class MembersList extends Fragment {
     }
 
     private void getMembers() {
-        DatabaseReference DatMembers = mDatabase.child("group").child(Main.Group).child("members");
+        DatabaseReference DatMembers = mDatabase.child("groups").child(Main.Group).child("members");
         DatMembers.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -150,7 +150,7 @@ public class MembersList extends Fragment {
                 if (dataSnapshot.exists()) {
                     String uid = dataSnapshot.getValue(String.class);
                     Map<String, Object> childUpdates = new HashMap<>();
-                    childUpdates.put("/group-invites/" + uid + "/" + Main.Group, username);
+                    childUpdates.put("/group-invites/" + uid + "/" + GroupManagement.GroupUpdated, username);
                     childUpdates.put("/groups/" + Main.Group + "/members-invited/" + uid, username);
                     mDatabase.updateChildren(childUpdates);
                 } else {

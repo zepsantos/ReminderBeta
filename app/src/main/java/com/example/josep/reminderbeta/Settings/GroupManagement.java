@@ -3,14 +3,15 @@ package com.example.josep.reminderbeta.Settings;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.preference.Preference;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.text.InputType;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.example.josep.reminderbeta.Adapters.InvitesAvailableAdapter;
 import com.example.josep.reminderbeta.Adapters.MembersAdapter;
@@ -18,6 +19,10 @@ import com.example.josep.reminderbeta.Main;
 import com.example.josep.reminderbeta.Models.GroupMember;
 import com.example.josep.reminderbeta.R;
 import com.github.machinarius.preferencefragment.PreferenceFragment;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -32,8 +37,8 @@ import java.util.Map;
 
 
 public class GroupManagement extends PreferenceFragment {
+    public static String GroupUpdated = null;
     private String uid;
-    private String GroupUpdated = null;
     private DatabaseReference mDatabase; //Referencia Geral
     private FirebaseAuth mAuth; // AUTH STATE
     private Preference LeaveGroup; // Botão de dar leave do group
@@ -71,7 +76,10 @@ public class GroupManagement extends PreferenceFragment {
     }
 
     private void CheckIfHasGroup() {
-        if (Main.Group != null || GroupUpdated != null) {
+        if (Main.Group != null) {
+            GroupUpdated = Main.Group;
+        }
+        if (GroupUpdated != null) {
             Group.setSummary(Main.Group);
             Members.setTitle(R.string.memberslist);
             LeaveGroupFunction();
@@ -105,8 +113,37 @@ public class GroupManagement extends PreferenceFragment {
                     public void onClick(final DialogInterface dialog, int which) {
                         String mText = input.getText().toString();
                         final String upperString = mText.substring(0, 1).toUpperCase() + mText.substring(1);
-                        final DatabaseReference mDatGroups = mDatabase.child("groups").child(upperString);
-                        mDatGroups.addListenerForSingleValueEvent(new ValueEventListener() {
+                        Map<String, Object> childUpdates = new HashMap<>();
+                        final String useruid = mAuth.getCurrentUser().getUid();
+                        childUpdates.put("/groups/" + upperString + "/owner/", useruid);
+                        childUpdates.put("/group-names/" + upperString, useruid);
+                        childUpdates.put("/groups/" + upperString + "/members/" + useruid, Settings.mName);
+                        childUpdates.put("/groups/" + upperString + "/name/", upperString);
+
+
+                        mDatabase.updateChildren(childUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                task.addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        addUserToGroup(useruid, upperString);
+                                        groupRefresh();
+                                        Group.setOnPreferenceClickListener(null);
+                                    }
+                                });
+                                task.addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Log.d("DEU", "DEU ERRO");
+                                    }
+                                });
+                            }
+                        });
+
+                        /*final DatabaseReference mDatGroups = mDatabase.child("/");
+                        mDatGroups.updateChildren(childUpdates);
+                       mDatGroups.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 if (dataSnapshot.exists()) {
@@ -115,13 +152,7 @@ public class GroupManagement extends PreferenceFragment {
                                     toast.show();
                                 } else {
                                     if (mAuth.getCurrentUser() != null) {
-                                        Map<String, Object> childUpdates = new HashMap<>();
-                                        String useruid = mAuth.getCurrentUser().getUid();
-                                        childUpdates.put("/groups/" + upperString + "/owner/", useruid);
-                                        childUpdates.put("/groups/" + upperString + "/members/" + useruid, Settings.mName);
-                                        childUpdates.put("/groups/" + upperString + "/name/", upperString);
-                                        childUpdates.put("/users/" + useruid + "/group/", upperString);
-                                        mDatabase.updateChildren(childUpdates);
+
                                         groupRefresh();
                                         Group.setOnPreferenceClickListener(null);
                                     }
@@ -132,7 +163,7 @@ public class GroupManagement extends PreferenceFragment {
                             public void onCancelled(DatabaseError databaseError) {
 
                             }
-                        });
+                        }); */
 
 
                     }
@@ -152,6 +183,12 @@ public class GroupManagement extends PreferenceFragment {
                 return false;
             }
         });
+    }
+
+    private void addUserToGroup(String useruid, String upperString) {
+        Map<String, Object> addusertogroup = new HashMap<>();
+        addusertogroup.put("/users/" + useruid + "/group/", upperString);
+        mDatabase.updateChildren(addusertogroup);
     }
 
     private void groupRefresh() {
