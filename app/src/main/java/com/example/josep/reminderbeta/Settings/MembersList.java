@@ -150,7 +150,7 @@ public class MembersList extends Fragment {
                 if (dataSnapshot.exists()) {
                     String uid = dataSnapshot.getValue(String.class);
                     Map<String, Object> childUpdates = new HashMap<>();
-                    childUpdates.put("/group-invites/" + uid + "/" + GroupManagement.GroupUpdated, username);
+                    childUpdates.put("/group-invites/" + uid + "/" + GroupManagement.GroupUpdated + "/" + username, "true");
                     childUpdates.put("/groups/" + Main.Group + "/members-invited/" + uid, username);
                     mDatabase.updateChildren(childUpdates);
                 } else {

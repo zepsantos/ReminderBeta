@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -88,9 +89,12 @@ public class InvitesList extends Fragment {
                     for (DataSnapshot dsp : dataSnapshot.getChildren()) {
                         lst.add(String.valueOf(dsp.getKey()));
                         invitedby.add(dsp.getValue(String.class));
+                        Log.d("invitedby", dsp.getValue(String.class));
                     }
                     for (String data : lst) {
+
                         Invite group = new Invite(data);
+                        Log.d("data", group.getName());
                         invitesList.add(group);
                         invitesAdapter.notifyDataSetChanged();
 
